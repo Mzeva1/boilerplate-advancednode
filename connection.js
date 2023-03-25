@@ -1,23 +1,21 @@
 // Do not change this file
 require('dotenv').config();
-const { MongoClient } = require('mongodb');
+const mongoose = require('mongoose');
 
-async function main(callback) {
-    const URI = process.env.MONGO_URI; // Declare MONGO_URI in your .env file
-    const client = new MongoClient(URI, { useNewUrlParser: true, useUnifiedTopology: true });
-
+const connectDB = async () => {
     try {
-        // Connect to the MongoDB cluster
-        await client.connect();
+        
+        const URI = process.env.MONGO_URI; // Declare MONGO_URI in your .env file
+    const conn = await new mongoose.connect(URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: true});
 
-        // Make the appropriate DB calls
-        await callback(client);
+      console.log(`Connected to database ${conn.connection.host}`)
 
     } catch (e) {
         // Catch any errors
         console.error(e);
         throw new Error('Unable to Connect to Database')
+        process.exit();
     }
 }
 
-module.exports = main;
+module.exports = connectDB;
